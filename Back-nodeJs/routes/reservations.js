@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const Reservation = require("../models/reservation");
-const Post = require("../models/post");
 
 //ALL RESERVATIONS
 router.get("/", async (req, res) => {
@@ -29,7 +28,8 @@ router.post("/", async (req, res) => {
     reservationDate: req.body.reservationDate,
     reservationStartTime: req.body.reservationStartTime,
     reservationEndTime: req.body.reservationEndTime,
-    nbrPersons: req.body.nbrPersons
+    nbrPersons: req.body.nbrPersons,
+    roomId: req.body.roomId
   });
   try {
     const savedReservation = await reservation.save();
@@ -43,10 +43,10 @@ router.post("/", async (req, res) => {
 //DELETE RESERVATION
 router.delete("/:reservationId", async (req, res) => {
   try {
-    const removedPost = await Reservation.deleteOne({
+    const removedReservation = await Reservation.deleteOne({
       _id: req.params.reservationId
     });
-    res.json(removedPost);
+    res.json(removedReservation);
   } catch (e) {
     res.json({ msg: e });
   }

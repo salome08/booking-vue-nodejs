@@ -8,8 +8,8 @@ const reservationSchema = mongoose.Schema(
     nbrPersons: { type: Number, required: true },
     roomId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Room"
-      // required: true
+      ref: "Room",
+      required: true
     }
   },
   { collection: "reservation" }

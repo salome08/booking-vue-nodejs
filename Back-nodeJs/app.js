@@ -15,12 +15,14 @@ app.use(cors());
 // });
 
 const reservationsRouter = require("./routes/reservations");
+const roomsRouter = require("./routes/rooms");
 
 //ROUTES
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 app.use("/reservations", reservationsRouter);
+app.use("/rooms", roomsRouter);
 
 //connect to db
 mongoose.connect(
