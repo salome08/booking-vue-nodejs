@@ -1,6 +1,14 @@
 <template>
   <v-container grid-list-xl>
-    <Room v-for="room in rooms" :key="room._id" :roomData="room" />
+    <Room
+      v-for="room in rooms"
+      :key="room._id"
+      :roomData="room"
+      :date="date"
+      :startTime="startTime"
+      :endTime="endTime"
+      :participants="participants"
+    />
   </v-container>
 </template>
 
@@ -13,7 +21,7 @@ export default {
   components: {
     Room
   },
-  props: ["rooms"]
+  props: ["rooms", "date", "startTime", "endTime", "participants"]
 };
 </script>
 

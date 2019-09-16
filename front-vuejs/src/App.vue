@@ -13,7 +13,7 @@
     <v-container grid-list-xl>
       <v-layout row>
         <div class="options">
-          <DatePicker />
+          <DatePicker @date="date=$event" />
           <v-container>
             <v-row>
               <v-col cols="12" lg="12">
@@ -22,6 +22,7 @@
                 <vue-timepicker
                   :hour-range="[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]"
                   :minute-interval="10"
+                  v-model="startTime"
                 ></vue-timepicker>
               </v-col>
             </v-row>
@@ -34,7 +35,7 @@
                 <vue-timepicker
                   :hour-range="[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]"
                   :minute-interval="10"
-                  solo
+                  v-model="endTime"
                 ></vue-timepicker>
               </v-col>
             </v-row>
@@ -64,7 +65,13 @@
             ></v-checkbox>
           </v-container>
         </div>
-        <ListRooms :rooms="rooms" />
+        <ListRooms
+          :rooms="rooms"
+          :date="date"
+          :startTime="startTime"
+          :endTime="endTime"
+          :participants="participants"
+        />
       </v-layout>
     </v-container>
   </v-app>
@@ -90,7 +97,10 @@ export default {
       checkboxTv: false,
       checkboxRp: false,
       rooms: [],
-      participants: ""
+      participants: "",
+      date: new Date().toISOString().substr(0, 10),
+      startTime: { HH: "13", mm: "30" },
+      endTime: { HH: "15", mm: "30" }
     };
   },
   methods: {

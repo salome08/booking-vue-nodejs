@@ -18,7 +18,7 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-time-picker no-title width="190" v-model="picker" @change="pickChange"></v-time-picker>
+          <v-time-picker no-title width="190" v-model="time" @change="pickChange"></v-time-picker>
         </v-menu>
       </v-col>
     </v-row>
@@ -30,13 +30,13 @@ export default {
   props: ["option"],
   data() {
     return {
-      picker: null,
+      time: null,
       landscape: false
     };
   },
   methods: {
     pickChange() {
-      console.log(this.picker);
+      console.log(this.time);
     }
   }
 };

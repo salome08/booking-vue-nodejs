@@ -22,7 +22,12 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+          <v-date-picker
+            v-model="date"
+            no-title
+            @input="menu1 = false"
+            @change="$emit('date', date)"
+          ></v-date-picker>
         </v-menu>
       </v-col>
     </v-row>

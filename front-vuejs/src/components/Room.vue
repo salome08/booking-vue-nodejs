@@ -21,15 +21,41 @@
     </v-card-text>
 
     <v-card-actions>
-      <v-btn text color="#2764b7">Réserver cette salle !</v-btn>
+      <!-- on click send reservation  -->
+      <v-btn text @click="bookARoom" color="#2764b7">Réserver cette salle !</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+import Vue from "vue";
+
 export default {
   name: "Room",
-  props: ["roomData"]
+  props: ["roomData", "date", "startTime", "endTime", "participants"],
+  methods: {
+    async bookARoom() {
+      console.log(this.participants);
+      const startTime = this.formatTime(this.startTime);
+      const endTime = this.formatTime(this.endTime);
+      const response = await Vue.axios.post(
+        "http://localhost:3000/reservations",
+        {
+          params: {
+            reservationDate: this.date,
+            reservationStartTime: startTime,
+            reservationEndTime: endTime,
+            nbrPersons: this.participants,
+            roomId: this.roomData._id
+          }
+        }
+      );
+      console.log(response);
+    },
+    formatTime(time) {
+      return this.date + "T" + time.HH + ":" + time.mm + "Z";
+    }
+  }
 };
 </script>
 

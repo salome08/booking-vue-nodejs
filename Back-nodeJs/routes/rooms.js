@@ -19,14 +19,17 @@ router.get("/", async (req, res) => {
   let nbrParticipants = req.query.participants;
   let tv = req.query.tv;
   let rp = req.query.rp;
+  let bothEq = tv && rp ? true : false;
   Room.find({ capacity: { $gte: nbrParticipants || 0 } })
     .populate("equipements")
     .populate("reservations")
     .then(rooms => {
       if (tv || rp) {
-        const filteredEquipmentsRooms = rooms.filter(
-          room =>
-            room.equipements.some(el => el.name == tv || el.name == rp) == true
+        const filteredEquipmentsRooms = rooms.filter(room =>
+          bothEq
+            ? room.equipements.length > 1
+            : room.equipements.some(el => el.name == tv || el.name == rp) ==
+              true
         );
         res.json(filteredEquipmentsRooms);
       } else res.json(rooms);

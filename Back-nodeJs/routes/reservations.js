@@ -5,7 +5,7 @@ const Reservation = require("../models/reservation");
 //ALL RESERVATIONS
 router.get("/", async (req, res) => {
   try {
-    const reservations = await Reservation.find();
+    const reservations = await Reservation.find().populate("roomId");
     res.json(reservations);
   } catch (e) {
     res.status(404).json({ msg: e });
@@ -24,19 +24,20 @@ router.get("/:reservationId", async (req, res) => {
 
 //SUBMIT RESERVATION
 router.post("/", async (req, res) => {
+  console.log(req.body);
   const reservation = new Reservation({
-    reservationDate: req.body.reservationDate,
-    reservationStartTime: req.body.reservationStartTime,
-    reservationEndTime: req.body.reservationEndTime,
-    nbrPersons: req.body.nbrPersons,
-    roomId: req.body.roomId
+    reservationDate: req.body.params.reservationDate,
+    reservationStartTime: req.body.params.reservationStartTime,
+    reservationEndTime: req.body.params.reservationEndTime,
+    nbrPersons: req.body.params.nbrPersons,
+    roomId: req.body.params.roomId
   });
   try {
     const savedReservation = await reservation.save();
     res.json(savedReservation);
     console.log("saved");
   } catch (e) {
-    res.json({ msg: e });
+    res.status(400).json({ msg: e });
   }
 });
 
