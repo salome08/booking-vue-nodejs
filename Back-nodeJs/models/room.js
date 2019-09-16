@@ -1,17 +1,15 @@
-const mongoose = require("mongoose");
+var mongoose = require("mongoose");
+var Schema = mongoose.Schema;
 
-const roomSchema = mongoose.Schema(
+var roomSchema = Schema(
   {
-    name: { type: String, required: true },
-    description: { type: String, required: true },
-    capacity: { type: Number, required: true },
-    equipements: { type: Array },
-    reservations: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "Reservation" }
-    ],
-    createdAt: { type: Date, required: true },
-    updatedAt: { type: Date, required: true }
+    name: { type: String },
+    description: { type: String },
+    capacity: { type: Number },
+    equipements: [{ type: Schema.Types.ObjectId, ref: "Equipment" }],
+    reservations: [{ type: Schema.Types.ObjectId, ref: "Reservation" }]
   },
+  { timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" } },
   { collection: "room" }
 );
 

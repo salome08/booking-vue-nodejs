@@ -1,10 +1,11 @@
 var mongoose = require("mongoose");
+var Schema = mongoose.Schema;
 
-var equipementSchema = mongoose.Schema(
+var equipmentSchema = Schema(
   {
-    name: { type: String, required: true }
+    name: { type: String }
   },
-  { collection: "equipement" }
+  { collection: "equipment" }
 );
 
-module.exports = mongoose.model("Equipement", equipementSchema);
+module.exports = mongoose.model("Equipment", equipmentSchema);

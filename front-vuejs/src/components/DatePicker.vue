@@ -13,6 +13,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
+              solo
               v-model="dateFormatted"
               label="When ?"
               persistent-hint

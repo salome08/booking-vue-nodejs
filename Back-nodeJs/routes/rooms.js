@@ -1,17 +1,39 @@
 const express = require("express");
 const router = express.Router();
 const Room = require("../models/room");
-const Equipement = require("../models/equipement");
+const Equipment = require("../models/equipement");
 
+/*
+    Si la tv est cochee, je recois tv sinon undefined
+    si tv je recupere ou name=tv sinon tout 
+
+    equipement.name exist && equipement.name = tv
+
+    soit les salles ou il y a la tv 
+    soit celles ou il y a un rp 
+    soit toutes
+
+*/
 //ALL ROOMS
 router.get("/", async (req, res) => {
-  try {
-    // console.log(req.query.participants);
-    const rooms = await Room.find();
-    res.json(rooms);
-  } catch (e) {
-    res.status(404).json({ msg: e });
-  }
+  let nbrParticipants = req.query.participants;
+  let tv = req.query.tv;
+  let rp = req.query.rp;
+  Room.find({ capacity: { $gte: nbrParticipants || 0 } })
+    .populate("equipements")
+    .populate("reservations")
+    .then(rooms => {
+      if (tv || rp) {
+        const filteredEquipmentsRooms = rooms.filter(
+          room =>
+            room.equipements.some(el => el.name == tv || el.name == rp) == true
+        );
+        res.json(filteredEquipmentsRooms);
+      } else res.json(rooms);
+    })
+    .catch(e => {
+      res.status(400).json({ msg: e });
+    });
 });
 
 //SPECIFIC ROOM
@@ -31,11 +53,12 @@ router.post("/", async (req, res) => {
     description: req.body.description,
     capacity: req.body.capacity,
     createdAt: req.body.createdAt,
-    updatedAt: req.body.updatedAt
+    updatedAt: req.body.updatedAt,
+    equipements: req.body.equipements
   });
-  req.body.equipements.forEach(element => {
-    room.equipements.push(element);
-  });
+  // req.body.equipements.forEach(element => {
+  //   room.equipements.push(element);
+  // });
   try {
     const savedRoom = await room.save();
     res.json(savedRoom);
@@ -43,6 +66,20 @@ router.post("/", async (req, res) => {
   } catch (e) {
     res.json({ msg: e });
   }
+});
+
+//ADD EQUIPMENT
+router.post("/addEquipment", function(req, res, next) {
+  var equipment = new Equipment({
+    name: req.body.name
+  });
+  equipment.save(function(err, insertedEquipment) {
+    if (err) {
+      res.send(err);
+    }
+    console.log(insertedEquipment);
+    res.json(insertedEquipment);
+  });
 });
 
 //DELETE ROOM

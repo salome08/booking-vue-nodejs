@@ -34,6 +34,7 @@
                 <vue-timepicker
                   :hour-range="[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]"
                   :minute-interval="10"
+                  solo
                 ></vue-timepicker>
               </v-col>
             </v-row>
@@ -45,19 +46,21 @@
                   label="Participants ?"
                   type="number"
                   min="1"
+                  solo
                   v-model="participants"
-                  @input="debounceParticipants"
+                  @input="debounceGetRooms"
                   prepend-icon="group"
                 ></v-text-field>
               </v-col>
             </v-row>
           </v-container>
           <v-container fluid>
-            <v-checkbox v-model="checkbox1" color="indigo" :label="`TV: ${checkbox1.toString()}`"></v-checkbox>
+            <v-checkbox v-model="checkboxTv" @change="debounceGetRooms" color="indigo" label="TV"></v-checkbox>
             <v-checkbox
-              v-model="checkbox2"
+              v-model="checkboxRp"
+              @change="debounceGetRooms"
               color="indigo"
-              :label="`Retro Projecteur: ${checkbox2.toString()}`"
+              label="Retro Projecteur"
             ></v-checkbox>
           </v-container>
         </div>
@@ -84,27 +87,23 @@ export default {
   },
   data() {
     return {
-      checkbox1: true,
-      checkbox2: false,
+      checkboxTv: false,
+      checkboxRp: false,
       rooms: [],
       participants: ""
     };
   },
   methods: {
-    debounceParticipants: _.debounce(function(value) {
-      if (value) {
-        Vue.axios
-          .get("http://localhost:3000/rooms", {
-            params: {
-              participants: value
-            }
-          })
-          .then(response => {
-            console.log(response.data);
-            this.rooms = response.data;
-          });
-      }
-    }, 800)
+    debounceGetRooms: _.debounce(async function() {
+      const response = await Vue.axios.get("http://localhost:3000/rooms", {
+        params: {
+          participants: this.participants,
+          tv: this.checkboxTv ? "TV" : "",
+          rp: this.checkboxRp ? "Retro Projecteur" : ""
+        }
+      });
+      this.rooms = response.data;
+    }, 400)
   },
   mounted() {
     Vue.axios.get("http://localhost:3000/rooms").then(response => {
@@ -134,5 +133,21 @@ export default {
   margin-left: 30px;
   margin-bottom: 4px;
   margin-top: 10px;
+}
+.theme--light.v-icon {
+  color: rgba(39, 100, 183, 0.78) !important;
+}
+input.display-time {
+  background-color: white !important;
+}
+.vue__time-picker input.display-time {
+  /* border: 1px solid #d2d2d2; */
+  width: 10em;
+  height: 2.2em;
+  padding: 0.3em 0.5em;
+  font-size: 1em;
+}
+input.display-time {
+  background-color: aqua;
 }
 </style>
