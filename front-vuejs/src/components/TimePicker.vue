@@ -34,11 +34,6 @@ export default {
       landscape: false
     };
   },
-  methods: {
-    pickChange() {
-      console.log(this.time);
-    }
-  }
 };
 </script>
 <style scoped>

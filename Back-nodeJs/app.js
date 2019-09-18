@@ -9,10 +9,6 @@ const app = express();
 app.set("port", process.env.PORT || 3000);
 app.use(bodyParser.json());
 app.use(cors());
-//Middlewares
-// app.use("/", () => {
-//   console.log("this is the middleware");
-// });
 
 const reservationsRouter = require("./routes/reservations");
 const roomsRouter = require("./routes/rooms");

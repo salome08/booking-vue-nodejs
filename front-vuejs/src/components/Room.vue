@@ -21,45 +21,32 @@
     </v-card-text>
 
     <v-card-actions>
-      <!-- on click send reservation  -->
-      <v-btn text @click="bookARoom" color="#2764b7">Réserver cette salle !</v-btn>
+      <Modal
+        :roomData="roomData"
+        :date="date"
+        :startTime="startTime"
+        :endTime="endTime"
+        :participants="participants"
+        @needReload="$emit('needReload')"
+      />
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import Vue from "vue";
+import Modal from "./Modal";
 
 export default {
   name: "Room",
-  props: ["roomData", "date", "startTime", "endTime", "participants"],
-  methods: {
-    async bookARoom() {
-      console.log(this.participants);
-      const startTime = this.formatTime(this.startTime);
-      const endTime = this.formatTime(this.endTime);
-      const response = await Vue.axios.post(
-        "http://localhost:3000/reservations",
-        {
-          params: {
-            reservationDate: this.date,
-            reservationStartTime: startTime,
-            reservationEndTime: endTime,
-            nbrPersons: this.participants,
-            roomId: this.roomData._id
-          }
-        }
-      );
-      console.log(response);
-    },
-    formatTime(time) {
-      return this.date + "T" + time.HH + ":" + time.mm + "Z";
-    }
-  }
+  components: {
+    Modal
+  },
+  props: ["roomData", "date", "startTime", "endTime", "participants"]
 };
 </script>
 
-<style>
+<style scoped>
 .v-card {
   max-width: 240px !important;
   margin-top: 17px;

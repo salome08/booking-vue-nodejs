@@ -8,6 +8,7 @@
       :startTime="startTime"
       :endTime="endTime"
       :participants="participants"
+      @needReload="$emit('needReload')"
     />
   </v-container>
 </template>

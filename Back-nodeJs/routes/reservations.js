@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Reservation = require("../models/reservation");
+const Room = require("../models/room");
 
 //ALL RESERVATIONS
 router.get("/", async (req, res) => {
@@ -24,7 +25,6 @@ router.get("/:reservationId", async (req, res) => {
 
 //SUBMIT RESERVATION
 router.post("/", async (req, res) => {
-  console.log(req.body);
   const reservation = new Reservation({
     reservationDate: req.body.params.reservationDate,
     reservationStartTime: req.body.params.reservationStartTime,
@@ -34,8 +34,16 @@ router.post("/", async (req, res) => {
   });
   try {
     const savedReservation = await reservation.save();
+    //add reservation to room
+    Room.findById(req.body.params.roomId).then(foundRoom => {
+      foundRoom.reservations.push(savedReservation);
+      foundRoom.save(error => {
+        if (error) console.log(error);
+      });
+    });
+    // Room.findById(req.body.params.roomId).then(foundRoom => {
+    // });
     res.json(savedReservation);
-    console.log("saved");
   } catch (e) {
     res.status(400).json({ msg: e });
   }

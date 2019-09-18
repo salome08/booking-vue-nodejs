@@ -13,7 +13,7 @@
     <v-container grid-list-xl>
       <v-layout row>
         <div class="options">
-          <DatePicker @date="date=$event" />
+          <DatePicker @date="date=$event, debounceGetRooms()" />
           <v-container>
             <v-row>
               <v-col cols="12" lg="12">
@@ -23,6 +23,7 @@
                   :hour-range="[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]"
                   :minute-interval="10"
                   v-model="startTime"
+                  @change="debounceGetRooms"
                 ></vue-timepicker>
               </v-col>
             </v-row>
@@ -36,6 +37,7 @@
                   :hour-range="[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]"
                   :minute-interval="10"
                   v-model="endTime"
+                  @change="debounceGetRooms"
                 ></vue-timepicker>
               </v-col>
             </v-row>
@@ -71,11 +73,14 @@
           :startTime="startTime"
           :endTime="endTime"
           :participants="participants"
+          @needReload="debounceGetRooms"
         />
       </v-layout>
     </v-container>
   </v-app>
 </template>
+          <script src="https://unpkg.com/vue"></script>
+
 <script>
 import Vue from "vue";
 import ListRooms from "./components/ListRooms";
@@ -97,7 +102,7 @@ export default {
       checkboxTv: false,
       checkboxRp: false,
       rooms: [],
-      participants: "",
+      participants: "4",
       date: new Date().toISOString().substr(0, 10),
       startTime: { HH: "13", mm: "30" },
       endTime: { HH: "15", mm: "30" }
@@ -109,17 +114,20 @@ export default {
         params: {
           participants: this.participants,
           tv: this.checkboxTv ? "TV" : "",
-          rp: this.checkboxRp ? "Retro Projecteur" : ""
+          rp: this.checkboxRp ? "Retro Projecteur" : "",
+          date: this.date,
+          startTime: this.formatTime(this.startTime),
+          endTime: this.formatTime(this.endTime)
         }
       });
       this.rooms = response.data;
-    }, 400)
-  },
-  mounted() {
-    Vue.axios.get("http://localhost:3000/rooms").then(response => {
-      console.log(response.data);
-      this.rooms = response.data;
-    });
+    }, 400),
+    formatTime(time) {
+      return this.date + "T" + time.HH + ":" + time.mm + ":00.000Z";
+    },
+    formatDate(time) {
+      return this.date + "T00:00:00.000Z";
+    }
   }
 };
 </script>
